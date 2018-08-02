@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #100101;
+}
+
+.app {
+  display: flex;
+  flex-wrap: wrap;
+  jsutify-content: space-between;
+ 
+}
+/*
+the ordered list*/
+.locations-list {
+  width: 100%;
+  background: #ddd;
+  height: auto;
+  color: white;
+  background: #100101;
+  font-size: 1em;
+}
+
+.map-container {
+  width: 70%;
+  order: 1;
+  padding: 2em;
+  box-sizing: border-box;
+  background: #100101;
+}
+
+#map {
+  width: 100%;
+  margin: auto;
+  height: 100vh;
+  border: 2px solid white;
+}
+/*
+the whole left side component*/
+.locations {
+  width: 25%; 
+  padding: 1em;
+  box-sizing: border-box;
+
+}
+
+/*
+the single location*/
+.location {
+  width: 90%;
+  padding: .5em;
+  font-size: 0.9em;
+  border-bottom: 2px solid #252831;
+  cursor: pointer;
+}
+
+.location:hover {
+  background-color: orange;
+  color: #100101;
+}
+/*
+input and filter button*/
+.search {
+  width: 100%;
+  margin: auto;
+  order: 0;
+}
+
+.search-input {
+  height: 4vh;
+  width: 70%;
+}
+
+.filter-button {
+  height: 5vh;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  width: 25%;
+  min-width: 48px;
+}
+
+.filter-button:active {
+  transform: translateY(2px);
+}
+
