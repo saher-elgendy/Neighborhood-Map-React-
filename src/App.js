@@ -44,9 +44,9 @@ class App extends Component {
 
   createScript() {
     const script = document.createElement('script');
-    script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRTschOElF6NRclmCZymKOoGb0jKlNtfU";
+    script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaGtxAabSe5qzzVKprFRRA492BjqpD3G4";
     document.body.appendChild(script);
-    script.addEventListener('load', e => {this.initMap()})   
+    script.addEventListener('load', e => {this.initMap()}); 
   }
 
   
