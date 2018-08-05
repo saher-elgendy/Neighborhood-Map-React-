@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is one of Udacity Frontend Nanodegree scholarship that aims to implementing react library and Google Maps API, the use can search locations that would be rendered on the map as markers,clicking an item in the scrollable locations list would animate the corresponding marker with infoWindow with additional data should open
+This is one of Udacity Frontend Nanodegree scholarship projects that aims to implementing react library and Google Maps API, the use can search locations that would be rendered on the map as markers,clicking an item in the scrollable locations list would animate the corresponding marker with infoWindow with additional data should open
 
 ## Dependencies
 
