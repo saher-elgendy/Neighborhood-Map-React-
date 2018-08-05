@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
-import escapeRegExp from 'escape-string-regexp';
+
 
 class MapContainer extends Component {
-  state = {
-    locations: this.props.locations,
-    markers: [],
-    query: this.props.query,
-    map: '',
-  }
-  
   render() {
-
     return (
-     
+      
       <div className="map-container">
-        <div  id='map'/>
+        <div className="menue-icon-container" onClick={this.props.toggleShowList}>
+          <div className="bar"></div>
+          <div className="bar"></div>
+          <div className="bar"></div>
+        </div>
+       
+        <div  id='map' role="application" aria-label="map"/>
       </div>
     );
   }

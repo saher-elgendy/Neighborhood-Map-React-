@@ -1,30 +1,27 @@
 import React, { Component } from 'react';
-import escapeRegExp from 'escape-string-regexp';
 
 class LocationList extends Component {
-  
-
   render() {
-    const { updateQuery, filterLocations, locations, showLocationData, markers} = this.props;
+    const { updateQuery, filterLocations, locations, showLocationData, markers } = this.props;
 
   	return(
       <div className="locations">
         <div className="search">
           <input 
+            aria-label="search locations"
             className="search-input"
              placeholder="Search locations" 
              onChange={e => { updateQuery(e.target.value) }}>          
           </input>
           <button 
             className="filter-button"
-             onClick={ e => { filterLocations()} }>
-             Filter
+             onClick={ e => { filterLocations()} } aria-label="filter">filter
           </button>
         </div>    
           <div className="search-locations">
             <ul className="locations-list">
 	          { locations.map((location, index) => 
-	        	<li className="location" key={index} onClick={e => { showLocationData(e, markers)}}>{ location.title }</li>
+	        	<li className="location" key={index} tabIndex={0} onClick={e => { showLocationData(e, markers)}}>{ location.name }</li>
 	          )}
             </ul>
           </div>
@@ -34,3 +31,4 @@ class LocationList extends Component {
 }
 
 export default LocationList;
+

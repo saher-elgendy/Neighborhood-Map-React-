@@ -1,47 +1,33 @@
 import React, { Component } from 'react';
 import MapContainer from './MapContainer';
-import LocationList from './LocationList'
-import { render } from 'react-dom';
+import LocationList from './LocationList';
 import escapeRegExp from 'escape-string-regexp';
-import sortBy from 'sort-by';
 import './App.css';
 
+import * as FoursquareAPI from './FoursquareAPI'
+
 class App extends Component {
-  allLocations =  [
-    {title: 'Great Pyramid', location: {lat: 29.979379560101638, lng: 31.13419599427948}},
-    {title: 'Khafre Pyramid' , location: {lat: 29.97614575245414 , lng: 31.130848597429008}},
-    {title: 'Mankaure Pyramid', location: {lat: 29.9725443872708 , lng: 31.128236125848503}},
-    {title: 'Sphinx', location: {lat: 29.975309317987243, lng: 31.13755411996624}},
-    {title: 'Museum of Cairo', location: {lat:   30.047503, lng: 31.233702}},
-    {title: 'Khan el-Khalili', location: {lat: 30.041833166 , lng: 31.257332304}},
-    {title: 'Cairo Tower', location: {lat: 30.045916, lng: 31.224291}},
-    {title: 'Tahrir Square', location: {lat: 30.0444, lng: 31.2357}},
-    {title: 'Saladin Citadel of Cairo', location: {lat: 30.0298604 , lng: 31.261105499999985}},
-    {title: 'Muhammad Ali Mosque', location: {lat: 30.0287015, lng: 31.259910600000012}},
-    {title: 'Al-Azhar Mosque', location: {lat: 30.045688, lng: 31.2626851}},
-    {title: 'Baron Empain Palace', location: {lat: 30.08671339999999, lng: 31.33025900000007}},
-    {title: 'Pharaonic Village', location: {lat: 29.9972598, lng: 31.215169800000012}},
-    {title: 'Al Qanatir Al Khayriyyah', location: {lat: 30.1902447, lng: 31.138434200000006}},
-    {title: 'Abdeen Palace', location: {lat: 30.0430033, lng: 31.247779600000058}},
-    {title: 'cairo opera house ',location: {lat: 30.0424866,lng: 31.224456799999984}},
-    {title: 'Coptic Museum', location: {lat: 30.0060382, lng: 31.2301827}},
-    {title: 'Cairo International Park', location: {lat: 30.0494138,lng: 31.33650829999999}},
-    {title: 'Aquarium Grotto Garden', location: {lat: 30.0565699,lng: 31.218614000000002}},
-    {title: 'Hanging Church', location: {lat: 30.0052663, lng: 31.230182600000035}}
-  ]
 
   state = {
-    locations: this.allLocations,
+    allLocations: [], 
+    locations: [],
     map:'',
     query: '',
     markers: [],
-    infoWindow: '',
+    infoWindow: '', 
+    match: '',
   }
 
-  componentDidMount(){  
-   this.createScript(); 
- }
-
+  componentDidMount() {
+    FoursquareAPI.getLocations().then(locations => {
+      // creating two instances of data ,one for processing and other represents the complete data
+      this.setState({  locations, allLocations: locations })
+      //load the map with all features
+      this.createScript();
+    // error on fetching locations should be handled here    
+    }).catch(err => alert("map and locations can not be loaded properly, try refreshing the page"))       
+  }
+  
   createScript() {
     const script = document.createElement('script');
     script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaGtxAabSe5qzzVKprFRRA492BjqpD3G4";
@@ -49,41 +35,41 @@ class App extends Component {
     script.addEventListener('load', e => {this.initMap()}); 
   }
 
-  
   initMap() {
+    //initilizing our map with all markers
     const map = new window.google.maps.Map(
     document.getElementById('map'), {
-      center: {lat: 30.044281 , lng: 31.340002},
+      center: this.state.locations[0].position,
       zoom: 15
     })
-
+    
     this.loadMarkers(map);
-
+    
     this.setState({
       map: map,
     })
   }
   
   loadMarkers(map) {
-
     let marker;
     const bounds = new window.google.maps.LatLngBounds()
+    //creating our markers depending on the locations
     this.setState({
       markers: this.state.locations.map(location => {
         marker = new window.google.maps.Marker({
-          position: location.location,
+          position: {lat: location.location.lat, lng: location.location.lng},
           map: map,
           animation: window.google.maps.Animation.DROP,
-          title: location.title,
+          title: location.name,
         })
-        
+
         bounds.extend(marker.position);
         return marker;
       })
     })
-
+    //now all markers appear in the initial view of the map
     map.fitBounds(bounds)
-    
+    //showing the infoWindow for the clicked marker
     this.addInfoWindow(map);
   }
 
@@ -91,105 +77,133 @@ class App extends Component {
     const infoWindow = new window.google.maps.InfoWindow();
 
     this.setState({
-       infoWindow: infoWindow,
+      infoWindow: infoWindow,
     })
 
     this.state.markers.forEach(marker => {
-
-      marker.addListener('click', function() {
+      //if markr is clicked open the  infoWindow with the information needed
+      marker.addListener('click', function(){
         map.setZoom(13);
         map.getCenter(marker.position)
 
-        if(infoWindow.marker != this){
+        if(infoWindow.marker !== this){
           infoWindow.marker = this;
-          infoWindow.setContent(`${this.title}`);
+          infoWindow.setContent(`${marker.title}`)
           infoWindow.open(map, this);
           marker.addListener('closeclick', function() {
             infoWindow.setMarker(null);
           });
         }
       });
-    });
-
-     
+    });    
   }
-
- updateQuery = (query) => {
+  //updating the query if the use searched for a location
+  updateQuery = (query) => {
     this.setState({
       query: query.trim()
     });
   }
-
+  //filtering the location depending on the user query
   filterLocations =()=> {
     const { query } = this.state;
-
+    //if there is a query filter the locationns depending on this query
     if(query) {
       const match = new RegExp(escapeRegExp(query), 'i')
       this.setState(state => ({
-        locations: this.allLocations.filter(location => match.test(location.title))
-      }))
+        match: match,
+        locations: this.state.allLocations.filter(location => match.test(location.name)),
+      })) 
     }
     else {
+      // if no query exist show the all location if filter button clicked
       this.setState({
-        locations: this.allLocations
+        locations: this.state.allLocations,
       })
     }
   }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { markers, map, locations } = this.state;
-
-    if(prevState.locations != this.state.locations) {
-      let showingMarkers;
-      markers.forEach(marker => marker.setMap(null))
-      showingMarkers = locations.map(location => markers.filter(marker => marker.title === location.title).find(marker => marker))
-      showingMarkers.forEach(marker => marker.setMap(map))
-    }
-  }
-
+  /*linking the locations items and the markers, if an item clicked, the corresponding marker
+  would animate and showing its infoWindow with the corresponding info*/
   showLocationData = (e, markers) => {
     const {infoWindow, map} = this.state;
-
+    //if an item is clicked
     markers.forEach(marker => {
+      //stop all markers animation
       marker.setAnimation(null)
-
+      //if the clicked item text is equal to the marker title relate them
       if(e.target.innerHTML === marker.title) {
         marker.setAnimation(window.google.maps.Animation.BOUNCE);
-        infoWindow.setContent(marker.title)
-        infoWindow.open(map, marker)
+        infoWindow.setContent(marker.title);
+        infoWindow.open(map, marker);
         setTimeout(marker.setAnimation(null), 0);
       }
     })
   }
- 
+  //if the hamburger icon clicked, it toggles showing the locations list
+  toggleShowList() {
+    const locationsList = document.querySelector('.locations');
+
+    if(!locationsList.classList.contains('open')) {
+      locationsList.classList.add('open');
+    }
+    else {
+      locationsList.classList.remove('open');
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { markers, map, locations, query, match } = this.state;
+    //if current locations are different from previous locations, change markers to correspond
+    //the locations
+    if(prevState.locations !== locations) {
+      //first remove all the markers from the map
+      markers.forEach(marker => marker.setMap(null));
+   
+      let showingMarkers;
+
+      if(query) {
+        showingMarkers = markers.filter(marker => match.test(marker.title));
+      }
+      else {
+        showingMarkers = markers;
+      }
+      //set the new markers to the map
+      showingMarkers.forEach(marker => marker.setMap(map));
+    }
+  }
+
   render() {
-
-    const { locations, query } = this.state;
-
-
+    const { markers, locations } = this.state;
+    
     return (
      <div className="app">
-     
-      <MapContainer
-        locations={ locations  } 
-        updateQuery={ this.updateQuery } 
-        filterLocations={ this.filterLocations }
-        query={ query }
-        markers={this.state.markers}
-        loadMarkers={this.loadMarkers}
-        filterMarkers={this.filterMarkers}
-        map={this.state.map} />
+       <header className="header">Cairo Landmarks</header>
 
-      <LocationList  
-        locations={ locations }
-        updateQuery={ this.updateQuery } 
-        filterLocations={this.filterLocations}
-        showLocationData = { this.showLocationData } 
-        markers={this.state.markers}
-      />
-      </div>
+       <MapContainer toggleShowList={this.toggleShowList}/>
+
+       <LocationList  
+         locations={ locations }
+         updateQuery={ this.updateQuery } 
+         filterLocations={this.filterLocations}
+         showLocationData = { this.showLocationData } 
+         markers={ markers }
+       />
+
+       <footer className="footer">
+         <div className="footer-content">
+           <span>Saher Elgendy develops 2018</span>
+         </div>
+         <div className="footer-icon">
+           <a href="https://www.facebook.com/saher.elgendy.71"><i className="fa fa-facebook-square"></i></a>
+           <a href="https://www.linkedin.com/in/saher-mostafa-1292818a/"><i className="fa fa-linkedin contact"></i></a>
+           <a href="https://github.com/saher-elgendy"><i className="fa fa-github"></i></a>
+         </div>
+       </footer>
+       </div>
     );
   }
 }
 
 export default App;
+
+ 
+ 
