@@ -24,6 +24,10 @@ class LocationList extends Component {
 	        	<li className="location" key={index} tabIndex={0} onClick={e => { showLocationData(e, markers)}}>{ location.name }</li>
 	          )}
             </ul>
+            
+          </div>
+          <div className="foursquare-attribution">
+            <p>Foursquare API</p>
           </div>
       </div>
   	)

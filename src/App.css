@@ -74,6 +74,14 @@ the single location*/
   background-color: orange;
   color: #100101;
 }
+
+.foursquare-attribution {
+  color: white;
+  font-size: .9em;
+  width: 80%;
+  margin: auto;
+  padding: 1vh 0;
+}
 /*
 input and filter button*/
 .search {
@@ -155,6 +163,7 @@ input and filter button*/
   margin: 10px;
   cursor: pointer;
   font-size: 1.5em;
+  color: white;
 }
 
 @media screen and (max-width: 750px) {

@@ -61,6 +61,7 @@ class App extends Component {
           map: map,
           animation: window.google.maps.Animation.DROP,
           title: location.name,
+          address: location.location.address
         })
 
         bounds.extend(marker.position);
@@ -88,7 +89,7 @@ class App extends Component {
 
         if(infoWindow.marker !== this){
           infoWindow.marker = this;
-          infoWindow.setContent(`${marker.title}`)
+          infoWindow.setContent(`Adress: ${marker.address ? marker.address : 'address could not be fetched'}`)
           infoWindow.open(map, this);
           marker.addListener('closeclick', function() {
             infoWindow.setMarker(null);
@@ -132,7 +133,7 @@ class App extends Component {
       //if the clicked item text is equal to the marker title relate them
       if(e.target.innerHTML === marker.title) {
         marker.setAnimation(window.google.maps.Animation.BOUNCE);
-        infoWindow.setContent(marker.title);
+        infoWindow.setContent(`Adress: ${marker.address ? marker.address : 'address could not be fetched'}`);
         infoWindow.open(map, marker);
         setTimeout(marker.setAnimation(null), 0);
       }
