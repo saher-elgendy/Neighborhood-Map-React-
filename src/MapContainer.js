@@ -21,12 +21,3 @@ class MapContainer extends Component {
 export default MapContainer;
   
  
-
-
-
- /*const script = document.createElement('script');
-   script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCaGtxAabSe5qzzVKprFRRA492BjqpD3G4";
-   document.body.appendChild(s)
-   s.addEventListener('load', e => {this.initMap()})
-   AIzaSyBRTschOElF6NRclmCZymKOoGb0jKlNtfU
-   */
