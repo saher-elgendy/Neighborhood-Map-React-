@@ -133,8 +133,7 @@ class App extends Component {
       //if the clicked item text is equal to the marker title relate them
       if(e.target.innerHTML === marker.title) {
         marker.setAnimation(window.google.maps.Animation.BOUNCE);
-        infoWindow.setContent(`<strong> Address</strong>: ${marker.address ? marker.address : 'address could not be fetched'}`);
-        infoWindow.open(map, marker);
+        new window.google.maps.event.trigger(marker, 'click');
         setTimeout(marker.setAnimation(null), 0);
       }
     })
