@@ -2,6 +2,9 @@
   "name": "neighborhood",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://saher-elgendy.github.io/MY-reads-book-tracking-app-"
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build" 
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "react": "^16.4.1",
@@ -17,3 +20,4 @@
     "eject": "react-scripts eject"
   }
 }
+

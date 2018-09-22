@@ -25,7 +25,9 @@ class App extends Component {
       //load the map with all features
       this.createScript();
     // error on fetching locations should be handled here    
-    }).catch(err => alert("map and locations can not be loaded properly, try refreshing the page"))       
+    }).catch(err => alert("map and locations can not be loaded properly, try refreshing the page"))  
+   
+    window.gm_authFailure = this.gm_authFailure;        
   }
   
   createScript() {
@@ -34,6 +36,10 @@ class App extends Component {
     document.body.appendChild(script);
     script.addEventListener('load', e => {this.initMap()}); 
   }
+
+  gm_authFailure() { 
+    alert("Google maps could not be loaded properly"); 
+  };
 
   initMap() {
     //initilizing our map with all markers
